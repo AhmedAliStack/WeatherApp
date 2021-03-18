@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="weather_status">Weather Status</string>
+    <string name="temp_unit">°C</string>
+    <string name="sun_rise">SunRise: </string>
+    <string name="sun_set">SunSet: </string>
 </resources>

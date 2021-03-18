@@ -63,6 +63,8 @@ dependencies {
     //Design
     implementation "com.intuit.sdp:sdp-android:$sdpVersion"
     implementation "com.intuit.ssp:ssp-android:$sdpVersion"
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
+    implementation "jp.wasabeef:picasso-transformations:$picassoTrVersion"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"

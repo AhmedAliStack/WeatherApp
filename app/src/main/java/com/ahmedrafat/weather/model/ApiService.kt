@@ -9,5 +9,5 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("weather")
-    fun getCityWeather(@Query("q") city: String , @Query("appid") id: String = APP_ID): Deferred<Response<WeatherModel>>
+    fun getCityWeather(@Query("q") city: String , @Query("appid") id: String = APP_ID, @Query("units") unit: String = TEMP_UNIT): Deferred<Response<WeatherModel>>
 }

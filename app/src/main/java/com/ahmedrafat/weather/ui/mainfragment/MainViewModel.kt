@@ -23,27 +23,34 @@ import javax.inject.Inject
 class MainViewModel @ViewModelInject constructor(private val client: Retrofit): ViewModel() {
     //Variables LifeData
     val weatherModelMutableLiveData: MutableLiveData<WeatherModel> = MutableLiveData()
+    val errorMutableLiveData: MutableLiveData<String> = MutableLiveData()
     val loading :MutableLiveData<Boolean> = MutableLiveData()
 
     private val apiClient: ApiService = client.create(ApiService::class.java)
 
     //Deferred to Receive Response
     private lateinit var deferred: Deferred<Response<WeatherModel>>
+
+    //request function
     fun getWeatherData(city:String){
         loading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
 
+        //call api from Background
+        viewModelScope.launch(Dispatchers.IO) {
             try{
                 deferred = apiClient.getCityWeather(city)
                 val response = deferred.await()
+                //handle response on the main thread
                 viewModelScope.launch(Dispatchers.Main) {
                     loading.value = false
                     weatherModelMutableLiveData.setValue(response.body())
                 }
             }catch (e:Exception){
+                //handle exception on the main thread
                 viewModelScope.launch(Dispatchers.Main) {
                     loading.value = false
                     weatherModelMutableLiveData.value = null
+                    errorMutableLiveData.value = e.localizedMessage
                 }
             }
         }
