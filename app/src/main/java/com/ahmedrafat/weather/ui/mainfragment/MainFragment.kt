@@ -1,15 +1,18 @@
 package com.ahmedrafat.weather.ui.mainfragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.work.WorkInfo
 import com.ahmedrafat.weather.R
 import com.ahmedrafat.weather.databinding.FragmentMainBinding
 import com.ahmedrafat.weather.model.apimodel.WeatherModel
 import com.ahmedrafat.weather.utils.blurLocalImage
 import com.ahmedrafat.weather.utils.loadImage
+import com.ahmedrafat.weather.utils.observeConnection
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -27,8 +30,23 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         //init view binding
         val binding = FragmentMainBinding.bind(view)
 
-        //bluer main background
-        context?.let { blurLocalImage(it, R.drawable.background3x, binding.mainBg) }
+        context?.let {
+            //detect connection it must be put in base fragment class
+            observeConnection(it).observe(viewLifecycleOwner,{ info ->
+                if(info.state == WorkInfo.State.FAILED){
+                    context?.let {
+                        Snackbar.make(view, getString(R.string.internet_required), Snackbar.LENGTH_LONG)
+                            .setActionTextColor(getColor(it, R.color.white))
+                            .show()
+                    }
+                }else if(info.state == WorkInfo.State.SUCCEEDED){
+                    mainViewModel.getWeatherData("Paris")
+                }
+            })
+
+            //bluer main background
+            blurLocalImage(it, R.drawable.background3x, binding.mainBg)
+        }
 
         //call weather service
         mainViewModel.getWeatherData("Paris")

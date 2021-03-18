@@ -4,10 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.work.WorkInfo
 import com.ahmedrafat.weather.WeatherApp
 import com.ahmedrafat.weather.model.ApiService
 import com.ahmedrafat.weather.model.apimodel.WeatherModel

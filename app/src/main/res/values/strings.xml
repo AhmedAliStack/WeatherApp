@@ -4,4 +4,5 @@
     <string name="temp_unit">°C</string>
     <string name="sun_rise">SunRise: </string>
     <string name="sun_set">SunSet: </string>
+    <string name="internet_required">Network Lost, We Need Internet to Retrieve Data</string>
 </resources>

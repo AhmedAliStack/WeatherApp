@@ -81,5 +81,6 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$gsonVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutineAdapterVersion"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
 }

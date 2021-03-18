@@ -1,7 +1,11 @@
 package com.ahmedrafat.weather.di
 
+import android.app.Application
+import android.content.Context
+import androidx.work.*
 import com.ahmedrafat.weather.model.ApiService
 import com.ahmedrafat.weather.model.DOMAIN
+import com.ahmedrafat.weather.utils.InternetWorker
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -60,4 +64,7 @@ object AppModule {
     @Singleton
     fun provideMoshiFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context = application
 }
