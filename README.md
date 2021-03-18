@@ -1,4 +1,4 @@
 # WeatherApp
 Weather App 
 
-Using MVVM,Dagger,Hilt and Retrofit
+Using MVVM,Dagger,Hilt,Navigation and Retrofit
