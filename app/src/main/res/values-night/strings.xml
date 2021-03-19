@@ -5,5 +5,8 @@
     <string name="temp_unit">°C</string>
     <string name="sun_rise">SunRise: </string>
     <string name="sun_set">SunSet: </string>
+    <string name="search_hint">Search for City</string>
     <string name="internet_required">Network Lost, We Need Internet to Retrieve Data</string>
+    <string name="empty_validation">City name shouldn\'t be empty</string>
+    <string name="loading">Loading ...</string>
 </resources>

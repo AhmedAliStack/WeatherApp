@@ -21,3 +21,5 @@ p
 @app/src/main/java/com/ahmedrafat/weather/utils/InternetWorker.kt,4\4\44b3c6bb212a850d6ed758f24b754b70d3283747
 k
 ;app/src/main/java/com/ahmedrafat/weather/ui/MainActivity.kt,4\b\4b2dbb29caabd71c5b8a517f86a570e3e95ff4ff
+w
+Gapp/src/main/java/com/ahmedrafat/weather/model/apimodel/WeatherModel.kt,6\2\625573ce77c454ae61d8fcabd4a1a0c0fa614de3

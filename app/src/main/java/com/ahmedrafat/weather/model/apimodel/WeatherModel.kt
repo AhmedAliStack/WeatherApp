@@ -8,6 +8,8 @@ import com.squareup.moshi.JsonClass
 data class WeatherModel(
     @Json(name = "base")
     val base: String? = "",
+    @Json(name = "message")
+    val message: String? = "",
     @Json(name = "clouds")
     val clouds: Clouds? = Clouds(),
     @Json(name = "cod")
