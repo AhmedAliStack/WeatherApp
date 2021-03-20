@@ -157,7 +157,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             //apply data to ui
             binding.apply {
                 toolbarTitle.text = response.name ?: defaultCity
-
+                searchCity.queryHint = response.name ?: defaultCity
                 //load weather icon
                 response.weather?.get(0)?.let {
                     if (it.icon != null)
