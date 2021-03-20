@@ -23,3 +23,9 @@ k
 ;app/src/main/java/com/ahmedrafat/weather/ui/MainActivity.kt,4\b\4b2dbb29caabd71c5b8a517f86a570e3e95ff4ff
 w
 Gapp/src/main/java/com/ahmedrafat/weather/model/apimodel/WeatherModel.kt,6\2\625573ce77c454ae61d8fcabd4a1a0c0fa614de3
+n
+>app/src/main/java/com/ahmedrafat/weather/utils/CheckNetwork.kt,f\c\fca2a44edb7a92bcf0ee99cebd1b24b7bcab9da5
+{
+Kapp/src/main/java/com/ahmedrafat/weather/model/apimodel/GeoLocationModel.kt,b\a\ba0af9d107b8d344f722d294639124eed661394f
+p
+@app/src/main/java/com/ahmedrafat/weather/utils/LocationGetter.kt,c\5\c5eb2b04905ef7d273071fa7084dbc13caef0f13

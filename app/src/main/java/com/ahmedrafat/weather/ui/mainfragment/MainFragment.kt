@@ -1,5 +1,11 @@
 package com.ahmedrafat.weather.ui.mainfragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,59 +17,62 @@ import androidx.fragment.app.viewModels
 import androidx.work.WorkInfo
 import com.ahmedrafat.weather.R
 import com.ahmedrafat.weather.databinding.FragmentMainBinding
-import com.ahmedrafat.weather.model.EMPTY_VALIDATION
-import com.ahmedrafat.weather.model.INTERNET_VALIDATION
+import com.ahmedrafat.weather.model.*
 import com.ahmedrafat.weather.model.apimodel.WeatherModel
-import com.ahmedrafat.weather.model.isNetworkConnected
 import com.ahmedrafat.weather.utils.blurLocalImage
 import com.ahmedrafat.weather.utils.hideKeyboard
 import com.ahmedrafat.weather.utils.loadImage
 import com.ahmedrafat.weather.utils.observeConnection
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
 
+    //location broadcast
+    private lateinit var locationReceiver: BroadcastReceiver
+
     //Inject viewmodel
     private val mainViewModel: MainViewModel by viewModels()
-    var alertDialog:AlertDialog? = null
+
+    //loading dialog
+    var alertDialog: AlertDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         //init view binding
         val binding = FragmentMainBinding.bind(view)
         alertDialog = initLoading()
 
-        context?.let {
-            //detect connection it must be put in base fragment class
-            observeConnection(it).observe(viewLifecycleOwner, { info ->
-                if (info.state == WorkInfo.State.FAILED) {
-                    context?.let {
-                        Snackbar.make(
-                            view,
-                            getString(R.string.internet_required),
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setActionTextColor(getColor(it, R.color.white))
-                            .show()
-                    }
-                }
-                else if (info.state == WorkInfo.State.SUCCEEDED) {
-                    mainViewModel.getWeatherData("Paris")
-                }
-            })
-
-            //bluer main background
-            blurLocalImage(it, R.drawable.background3x, binding.mainBg)
-        }
-
         //call weather service
-        mainViewModel.getWeatherData("Paris")
+        mainViewModel.getWeatherData(defaultCity)
 
+        //init work manager observer
+        initWorkManager(binding)
+
+        //init api observers
+        initObservers(binding)
+
+        //receiver updates from broadcast
+        locationReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val latitude = intent?.getDoubleExtra(LATITUDE, 0.0)
+                val longitude = intent?.getDoubleExtra(LONGITUDE, 0.0)
+
+                if (latitude != null && longitude != null)
+                    addressFetch(latitude, longitude)
+            }
+
+        }
+    }
+
+    private fun initObservers(binding: FragmentMainBinding) {
         //observe response from api
         mainViewModel.weatherModelMutableLiveData.observe(viewLifecycleOwner, { response ->
             if (response != null)
@@ -71,8 +80,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         })
 
         //observe loading
-        mainViewModel.loading.observe(viewLifecycleOwner,{
-            if(it)
+        mainViewModel.loading.observe(viewLifecycleOwner, {
+            if (it)
                 alertDialog?.show()
             else
                 alertDialog?.dismiss()
@@ -80,24 +89,63 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         //observe if there is error
         mainViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { apiError ->
-            context?.let {
-                when(apiError){
+            view?.let {
+                when (apiError) {
                     EMPTY_VALIDATION -> Snackbar.make(
-                        view,
+                        it,
                         resources.getString(R.string.empty_validation),
                         Snackbar.LENGTH_LONG
                     )
                     INTERNET_VALIDATION -> Snackbar.make(
-                        view,
+                        it,
                         resources.getString(R.string.internet_required),
                         Snackbar.LENGTH_LONG
                     )
-                    else -> Snackbar.make(view, apiError, Snackbar.LENGTH_LONG)
-                        .setActionTextColor(getColor(it, R.color.white))
-                    .show()
+                    else -> Snackbar.make(it, apiError, Snackbar.LENGTH_LONG)
+                        .setActionTextColor(getColor(requireContext(), R.color.white))
+                        .show()
                 }
             }
         })
+    }
+
+    private fun initWorkManager(binding: FragmentMainBinding) {
+
+        //detect connection it must be put in base fragment class
+        observeConnection(requireContext()).observe(viewLifecycleOwner, { info ->
+            if (info.state == WorkInfo.State.FAILED) {
+                context?.let {
+                    view?.let { it1 ->
+                        Snackbar.make(
+                            it1,
+                            getString(R.string.internet_required),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .setActionTextColor(getColor(it, R.color.white))
+                            .show()
+                    }
+                }
+            } else if (info.state == WorkInfo.State.SUCCEEDED) {
+                if (binding.toolbarTitle.text != "")
+                    mainViewModel.getWeatherData(binding.toolbarTitle.text.toString())
+                else
+                    mainViewModel.getWeatherData(defaultCity)
+            }
+        })
+
+        //bluer main background
+        blurLocalImage(requireContext(), R.drawable.background3x, binding.mainBg)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.registerReceiver(locationReceiver, IntentFilter(loc_receiver))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(locationReceiver)
     }
 
     //display on ui
@@ -108,7 +156,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         response.let {
             //apply data to ui
             binding.apply {
-                toolbarTitle.text = response.name ?: "Cairo"
+                toolbarTitle.text = response.name ?: defaultCity
 
                 //load weather icon
                 response.weather?.get(0)?.let {
@@ -139,6 +187,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                 }
 
+                //submit search result
                 searchCity.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (query != null) {
@@ -158,14 +207,28 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     //display loading
-    private fun initLoading():AlertDialog?{
+    private fun initLoading(): AlertDialog? {
         val loadingDialog: AlertDialog
-        return if(context != null) {
+        return if (context != null) {
             loadingDialog =
                 AlertDialog.Builder(requireContext()).setView(R.layout.dialog_loading).create()
             loadingDialog
-        }else{
+        } else {
             null
+        }
+    }
+
+    //fetch city from address
+    fun addressFetch(lattitude: Double, longitude: Double) {
+        val addresses: List<Address>
+        val geocoder = Geocoder(context, Locale.getDefault())
+        try {
+            addresses = geocoder.getFromLocation(lattitude, longitude, 1)
+            if (addresses.isNotEmpty()) {
+                mainViewModel.getWeatherData(addresses[0].locality)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 }

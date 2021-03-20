@@ -9,7 +9,7 @@ import com.ahmedrafat.weather.model.isNetworkConnected
 import javax.inject.Inject
 
 
-class CheckNetwork @Inject constructor(private val context: Context) {
+class CheckNetwork (private val context: Context) {
 
     val connectivityManager =
     context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
