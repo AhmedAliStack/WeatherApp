@@ -6,15 +6,14 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.ahmedrafat.weather.R
 import com.ahmedrafat.weather.model.LATITUDE
 import com.ahmedrafat.weather.model.LONGITUDE
 import com.ahmedrafat.weather.model.loc_receiver

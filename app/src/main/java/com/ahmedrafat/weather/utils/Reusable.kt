@@ -2,18 +2,13 @@ package com.ahmedrafat.weather.utils
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.work.*
 import com.ahmedrafat.weather.model.IMAGE_URL
-import com.ahmedrafat.weather.model.REQUEST_CHECK_SETTINGS
 import com.ahmedrafat.weather.model.apimodel.ApiError
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.BlurTransformation
 import okhttp3.ResponseBody

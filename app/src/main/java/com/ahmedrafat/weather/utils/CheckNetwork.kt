@@ -1,12 +1,12 @@
 package com.ahmedrafat.weather.utils
 
 import android.content.Context
-import android.net.*
+import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
-import androidx.annotation.RequiresApi
 import com.ahmedrafat.weather.model.isNetworkConnected
-import javax.inject.Inject
 
 
 class CheckNetwork (private val context: Context) {
