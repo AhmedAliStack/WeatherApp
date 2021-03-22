@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.ahmedrafat.weather.model.LATITUDE
 import com.ahmedrafat.weather.model.LONGITUDE

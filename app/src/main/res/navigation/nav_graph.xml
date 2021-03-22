@@ -3,10 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ahmedrafat.weather.ui.mainfragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.ahmedrafat.weather.ui.splashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+        <argument android:name="city" app:argType="string" android:defaultValue="Paris" />
+    </fragment>
 </navigation>
