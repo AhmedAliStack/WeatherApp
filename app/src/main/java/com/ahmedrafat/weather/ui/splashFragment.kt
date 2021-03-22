@@ -104,7 +104,6 @@ class splashFragment : Fragment(R.layout.fragment_splash) {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        autoNavigate()
         when (requestCode) {
             REQUEST_LOCATION -> {
                 if (grantResults.isEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
@@ -114,14 +113,32 @@ class splashFragment : Fragment(R.layout.fragment_splash) {
                         Toast.LENGTH_LONG
                     ).show()
                 }else{
+                    autoNavigate()
                     requireContext().startService(Intent(requireContext(), LocationGetter::class.java))
                 }
             }
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun autoNavigate() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.location_permission),
+                Toast.LENGTH_LONG
+            ).show()
+            Handler(Looper.getMainLooper()).postDelayed(Runnable { /* Create an Intent that will start the Navigation host activity . */
+                findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+            }, 5000)
+            return
+        }
         val location: Location? = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         if(location?.latitude != null)
             addressFetch(location.latitude,location.longitude)
